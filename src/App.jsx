@@ -1,11 +1,7 @@
-import { useState, useEffect } from 'react'
-import { Amplify } from 'aws-amplify'
-import { generateClient } from 'aws-amplify/api'
-import { uploadData } from 'aws-amplify/storage'
+import { useState } from 'react'
 import './App.css'
 
-// Configure Amplify (will be set up during deployment)
-const client = generateClient()
+// Simplified version - will add backend integration later
 
 function App() {
   const [status, setStatus] = useState('idle')
@@ -18,46 +14,25 @@ function App() {
   const handleDownload = async () => {
     try {
       setStatus('processing')
-      setMessage('Starting PDF download and upload process...')
+      setMessage('🚧 Backend integration coming soon! This is the frontend-only version.')
       setResults(null)
       setProgress('')
       
-      // Call Amplify API (Lambda function)
-      const response = await client.graphql({
-        query: `
-          mutation ProcessPDFs($url: String!) {
-            processPDFs(url: $url) {
-              success
-              summary {
-                total
-                successful
-                failed
-              }
-              results {
-                filename
-                s3Key
-                size
-                originalUrl
-              }
-              errors {
-                url
-                error
-              }
-            }
-          }
-        `,
-        variables: { url: URL }
-      })
+      // Simulate processing for demo
+      setTimeout(() => {
+        setStatus('success')
+        setMessage('✅ Frontend deployed successfully! Backend integration will be added next.')
+        setResults({
+          summary: {
+            total: 0,
+            successful: 0,
+            failed: 0
+          },
+          results: [],
+          errors: []
+        })
+      }, 2000)
       
-      const result = response.data.processPDFs
-      
-      setStatus('success')
-      setResults(result)
-      setMessage(`✅ Process completed! ${result.summary.successful}/${result.summary.total} PDFs uploaded successfully.`)
-      
-      if (result.summary.failed > 0) {
-        setMessage(prev => prev + ` ${result.summary.failed} PDFs failed to process.`)
-      }
     } catch (error) {
       setStatus('error')
       setMessage(`❌ Error: ${error.message}`)
@@ -159,7 +134,7 @@ function App() {
 
       <footer>
         <p>Target URL: <a href={URL} target="_blank" rel="noopener noreferrer">{URL}</a></p>
-        <p>Powered by AWS Amplify</p>
+        <p>Powered by AWS Amplify (Frontend deployed, backend integration coming next)</p>
       </footer>
     </div>
   )
